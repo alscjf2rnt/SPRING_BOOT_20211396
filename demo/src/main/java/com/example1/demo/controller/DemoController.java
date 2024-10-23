@@ -36,7 +36,8 @@ public class DemoController {
     }
 
     @GetMapping("/about_detailed")
-    public String about() {         // 이페이지는 변수세팅없이 단순 링크다 하면 파라미터 비우시고 명시하시면 됩니다.
+    public String about() {         // 이페이지는 변수세팅없이 단순 링크다 하면 파라미터 비우시고 명시하시면 됩니다..
+        System.out.println("about_detailed 메소드 호출됨");
         return "about_detailed";
     }
 
