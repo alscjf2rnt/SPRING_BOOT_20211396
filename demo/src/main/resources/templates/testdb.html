@@ -5,7 +5,13 @@
 </head>
 <body>
 <h1>User List</h1>
-<p>아이디(기본키) : <span th:text="${data4.id}"></span></p>
-<p>이름 : <span th:text="${data4.name}"></span></p>
+
+<div th:each="test : ${data4}">
+    <p>아이디(기본키) : <span th:text="${test.id}"></span></p>
+    <p>이름 : <span th:text="${test.name}"></span></p>
+</div>
+
+<!-- <p>아이디(기본키) : <span th:text="${data4.id}"></span></p>
+<p>이름 : <span th:text="${data4.name}"></span></p> -->
 </body>
 </html>

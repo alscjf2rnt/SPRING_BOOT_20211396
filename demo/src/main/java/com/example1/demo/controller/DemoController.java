@@ -1,11 +1,13 @@
 package com.example1.demo.controller;
+// import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example1.demo.model.domain.TestDB;
-import com.example1.demo.model.service.TestService;// 최상단 서비스 클래스 연동 추가
+import com.example1.demo.model.service.TestService;
 
 @Controller   //컨트롤러 이노테이션 명시
 public class DemoController {
@@ -15,21 +17,27 @@ public class DemoController {
 
     @GetMapping("/testdb")
     public String getAllTestDBs(Model model) {
-        TestDB test = testService.findByName("홍길동");
-        model.addAttribute("data4", test);
-        System.out.println("데이터 출력 디버그 : " + test);
-        return "testdb";
+
+            List<TestDB> allTests = testService.findAll();
+            model.addAttribute("data4", allTests);  // 모델에 추가
+        System.out.println("데이터 출력 디버그 : " + allTests);
+        return "testdb";  // 템플릿으로 반환
+        // TestDB test = testService.findByName("홍길동");
+        // model.addAttribute("data4", test);
+        // System.out.println("데이터 출력 디버그 : " + test);
+        // return "testdb";
     }
 
 
     @GetMapping("/hello")  //전송방식 GET
     public String hello(Model model) {  // model 설정 , 매소드 이름이 다름 '모델'이라는 '객체', '데이터'라는 '변수' 세팅을 할때는 직접세팅을 할수있고
     model.addAttribute("data","반갑습니다.");
-    return "hello";  // hello.html 연결
+        return "hello";  // hello.html 연결
     }
+
     @GetMapping("/about_detailed")
     public String about() {         // 이페이지는 변수세팅없이 단순 링크다 하면 파라미터 비우시고 명시하시면 됩니다.
-    return "about_detailed";
+        return "about_detailed";
     }
 
     @GetMapping("/test1")
@@ -43,8 +51,21 @@ public class DemoController {
         return "thymeleaf_test1";
     }
 
+    @GetMapping("/hello2")
+    public String hello2(Model model) {
+        // 5개의 속성 추가
+        model.addAttribute("message1", "김민철님");
+        model.addAttribute("message2", "방갑습니다");
+        model.addAttribute("message3", "오늘");
+        model.addAttribute("message4", "날씨는");
+        model.addAttribute("message5", "매우 좋습니다");
+        
+        return "hello2";
+    }
+
     // @GetMapping("/acticle_list")
     // public String article_list() {
     //     return "article_list";
     // }
+
 }
