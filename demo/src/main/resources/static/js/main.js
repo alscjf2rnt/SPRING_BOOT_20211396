@@ -120,7 +120,12 @@
         dots: true,
         loop: true,
     });
-
     
+    function confirmClose() {
+        window.close(); // 현재 창 닫기
+        window.history.back(); // 이전 페이지로 이동
+    }
+    
+    window.confirmClose = confirmClose;
 })(jQuery);
 

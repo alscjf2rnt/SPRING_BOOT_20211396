@@ -34,11 +34,6 @@
 
 <body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="51">
     <!-- Spinner Start -->
-    <!-- <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div> -->
     <!-- Spinner End -->
 
     <!-- Service Start -->
@@ -49,7 +44,7 @@
                     <h1 class="display-5 mb-0">상세 소개</h1>
                 </div>
                 <div class="col-lg-6 text-lg-end">
-                    <a class="btn btn-primary py-3 px-5" href="/">되돌아가기</a>
+                    <a class="btn btn-primary py-3 px-5" href="javascript:void(0);" onclick="confirmClose()">되돌아가기</a>
                 </div>
             </div>
             <div class="row g-4">
@@ -61,7 +56,7 @@
                         <div class="ms-sm-4">
                             <h4 class="mb-3">학습능력</h4>
                             <h6 class="mb-3">Start from <span class="text-primary">$199</span></h6>
-                            <span>이해하고 될 때까지 계속 시도하는 사람, 항상 새로운 것을 배울 준비가 된 사람!</span>
+                            <span>상상력과 호기심으로 창의적인 접근방법에 대한 욕구!</span>
                         </div>
                     </div>
                 </div>
@@ -73,7 +68,7 @@
                         <div class="ms-sm-4">
                             <h4 class="mb-3">분석능력</h4>
                             <h6 class="mb-3">Start from <span class="text-primary">$199</span></h6>
-                            <span>IT 트랜드 현황 및 시장 분석, 기술 전망 및 표준 정책 분석!</span>
+                            <span>다양한 영상 콘텐츠의 흐름과 스타일을 분석, 효과적인 편집 방향성을 제시!</span>
                         </div>
                     </div>
                 </div>
@@ -85,7 +80,7 @@
                         <div class="ms-sm-4">
                             <h4 class="mb-3">개발 능력</h4>
                             <h6 class="mb-3">Start from <span class="text-primary">$199</span></h6>
-                            <span>새로운 언어도 빠르게 적응하는 사람, 모든 것이 구현 할 수 있는 능력!</span>
+                            <span>Adobe Premiere Pro/Cap cut/After Effects/Photoshop!</span>
                         </div>
                     </div>
                 </div>
@@ -95,9 +90,9 @@
                             <i class="fa fa-laptop-code fa-2x text-dark"></i>
                         </div>
                         <div class="ms-sm-4">
-                            <h4 class="mb-3">기타</h4>
+                            <h4 class="mb-3">스토리텔링 능력</h4>
                             <h6 class="mb-3">Start from <span class="text-primary">$199</span></h6>
-                            <span>추가하고 싶은 내용</span>
+                            <span>다양한 스토리텔링을 상상하고 탄탄한 기획을 통해 전하고자하는 메시지를 명확하게 전달하는 능력!</span>
                         </div>
                     </div>
                 </div>
@@ -108,18 +103,39 @@
 
     <!-- Copyright Start -->
     <div class="container-fluid bg-dark text-white py-4">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                        &copy; <a class="border-bottom text-secondary" href="#">Your Site Name</a>, All Right Reserved.
-                    </div>
-                    <div class="col-md-6 text-center text-md-end">
-                        <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                        Designed By <a cl   ass="border-bottom text-secondary" href="https://htmlcodex.com">HTML Codex</a>
-                        <br>Distributed By: <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom text-secondary" href="#">Your Site Name</a>, All Right Reserved.
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    Designed By <a class="border-bottom text-secondary" href="https://htmlcodex.com">HTML Codex</a>
+                    <br>Distributed By: <a class="border-bottom" href="https://themewagon.com" target="_blank">ThemeWagon</a>
                 </div>
             </div>
         </div>
     </div>
     <!-- Copyright End -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="static/js/main.js"></script>
+
+    <script>
+        function confirmClose() {
+            // 확인 대화 상자를 띄운 후 창을 닫기
+            const confirmation = confirm("현재 창을 닫으시겠습니까?");
+            if (confirmation) {
+                window.close(); // 현재 창 닫기
+                window.history.back(); // 이전 페이지로 이동
+            }
+        }
+    </script>
+</body>
+
+</html>
+<p class="mb-4">안녕하세요! 저는 영상편집에 대한 깊은 열정을 가진 영상편집자 지망생입니다. 대학교 졸업까지 영상 제작과 편집을 목표로 열심히 달려왔습니다. 비록 아직 실력은 부족할 수 있지만, 저는 항상 배우고 성장하는 자세로 임하고 있습니다.</p>
+<p class="mb-3"><i class="far fa-check-circle text-primary me-3"></i>학습 능력 : </p>
+<p class="mb-3"><i class="far fa-check-circle text-primary me-3"></i>분석 능력 : </p>
+<p class="mb-3"><i class="far fa-check-circle text-primary me-3"></i>개발 능력 : </p>
+<a class="btn btn-primary py-3 px-5 mt-3" href="/about_detailed" target="_blank">더보기</a>
