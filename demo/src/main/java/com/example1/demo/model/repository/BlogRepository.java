@@ -6,4 +6,6 @@ import com.example1.demo.model.domain.Article;
 
 @Repository
 public interface BlogRepository extends JpaRepository<Article, Long>{
+
+    
 }
