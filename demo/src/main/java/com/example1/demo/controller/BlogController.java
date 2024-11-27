@@ -15,6 +15,8 @@ import com.example1.demo.model.domain.Board;
 import com.example1.demo.model.service.AddArticleRequest;
 import com.example1.demo.model.service.BlogService;
 
+import jakarta.servlet.http.HttpSession;
+
 
 @Controller   // 컨트롤러 이노테이션 명시
 public class BlogController {
@@ -42,26 +44,46 @@ public class BlogController {
     // }
     
  
- // 게시판 목록 페이지 (페이지네이션 및 검색 지원)
- @GetMapping("/board_list") // 새로운 게시판 링크 지정
- public String board_list(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "") String keyword) {
-     // 페이지당 게시글 개수를 3으로 설정
-     PageRequest pageable = PageRequest.of(page, 3);
-     Page<Board> list; // Page를 반환
+    // 게시판 목록 페이지 (로그인 사용자 이메일 전달)
+    @GetMapping("/board_list")
+    public String board_list(
+        Model model,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "") String keyword,
+        HttpSession session
+    ) {
+        // 세션에서 userId와 email 가져오기
+        String userId = (String) session.getAttribute("userId");
+        String email = (String) session.getAttribute("email");
 
-     // 검색어가 없으면 전체 게시글 조회, 있으면 검색한 게시글만 조회
-     if (keyword.isEmpty()) {
-         list = blogService.findAllBoards(pageable); // 기본 전체 출력(키워드 없이)
-     } else {
-         list = blogService.searchByKeyword(keyword, pageable); // 키워드로 검색
-     }
+        if (userId == null || email == null) {
+            return "redirect:/member_login"; // 세션 정보가 없으면 로그인 페이지로 리다이렉트
+        }
 
-        model.addAttribute("boards", list); // 모델에  추가
-        model.addAttribute("totalPages", list.getTotalPages()); // 페이지  크기
-        model.addAttribute("currentPage", page); // 페이지  번호
-        model.addAttribute("keyword", keyword); // 키워드
-        return "board_list"; // .HTML 연결
-}
+        System.out.println("세션 userId: " + userId); // 디버깅용 출력
+        System.out.println("세션 email: " + email); // 디버깅용 출력
+
+        // 페이지당 게시글 개수를 3으로 설정
+        PageRequest pageable = PageRequest.of(page, 3);
+        Page<Board> list;
+
+        // 검색어에 따른 게시글 조회
+        if (keyword.isEmpty()) {
+            list = blogService.findAllBoards(pageable); // 전체 게시글 조회
+        } else {
+            list = blogService.searchByKeyword(keyword, pageable); // 검색된 게시글 조회
+        }
+
+        // 모델에 필요한 데이터 추가
+        model.addAttribute("boards", list);
+        model.addAttribute("totalPages", list.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("email", email); // 로그인 사용자 이메일 추가
+
+        return "board_list"; // 게시판 목록 페이지로 이동
+    }
+    
      // 게시글 작성 화면 표시
      @GetMapping("/article_write") // 게시글 작성 페이지로 이동하는 메소드 추가
      public String article_write(Model model) {
