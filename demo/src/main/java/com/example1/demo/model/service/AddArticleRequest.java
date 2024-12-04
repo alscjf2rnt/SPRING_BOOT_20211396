@@ -15,6 +15,13 @@ public class AddArticleRequest {
     private int viewCount; // 새로 추가된 필드
     private int likes; // 새로 추가된 필드
 
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getUser() {
+        return user;
+    }
         // 기존 toEntity 메서드 주석 처리
     /*
     public Article toEntity() { // Article 객체 생성
@@ -43,6 +50,10 @@ public class AddArticleRequest {
                 .likes(likes)
                 .build();
                 
+
+                
     }
+
+    
 }
 

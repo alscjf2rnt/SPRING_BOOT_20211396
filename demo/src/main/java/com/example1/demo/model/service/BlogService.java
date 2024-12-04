@@ -1,5 +1,6 @@
 package com.example1.demo.model.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +25,19 @@ public class BlogService {
     @Autowired
     private final BoardRepository boardRepository;
 
-    public List<Article> findAllArticles() { // 게시판 전체 목록 조회
-        return blogRepository.findAll();   
+    public Page<Article> findAllArticles(Pageable pageable) {// 게시판 전체 목록 조회
+        return blogRepository.findAll(pageable);
     }
 
- // Board 전체 목록 조회
- public List<Board> findAllBoards() { // 메소드명 수정
-    return boardRepository.findAll();
+
+ // 검색어로 게시글 검색
+ public Page<Article> searchArticlesByKeyword(String keyword, PageRequest pageable) {
+    return blogRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable); // 제목이나 내용에서 키워드를 포함하는 게시글 검색
 }
-
-
+ // 게시판 검색
+ public Page<Board> searchBoardsByKeyword(String keyword, Pageable pageable) {
+    return boardRepository.findByTitleContainingIgnoreCase(keyword, pageable); // 검색된 게시판 목록 조회
+}
     public Article save(AddArticleRequest request) {
         // DTO가 없는 경우 이곳에 직접 구현 가능
         // public ResponseEntity<Article> addArticle(@RequestParam String title, @RequestParam String content) {
@@ -57,6 +61,18 @@ public Board saveBoard(AddArticleRequest request) {
     
 }
 
+ // Board 저장
+ public Board saveArticle(AddArticleRequest request) {
+    Board board = new Board();
+    board.setTitle(request.getTitle()); // AddArticleRequest의 title을 Board의 title로 설정
+    board.setContent(request.getContent()); // content도 마찬가지
+    board.setUser(request.getUser()); // user 설정
+    board.setNewDate(request.getNewDate()); // newDate 설정
+    board.setCount(0);  // 조회수 기본값 0 (int로 설정)
+    board.setLikec(0);  // 좋아요 수 기본값 0 (int로 설정)
+    return boardRepository.save(board); // Board 객체를 저장
+    
+}
 
 public Page<Board> findAllBoards(Pageable pageable) {
     return boardRepository.findAll(pageable); // Page<Board> 반환
@@ -67,6 +83,25 @@ public Page<Board> findAllBoards(Pageable pageable) {
     return blogRepository.findById(id);
 }
 
+public List<Board> findAllBoardsFromArticles(Pageable pageable) {
+    Page<Article> articlesPage = blogRepository.findAll(pageable);
+    return convertArticlesToBoards(articlesPage.getContent());
+}
+
+public List<Board> convertArticlesToBoards(List<Article> articles) {
+    List<Board> boards = new ArrayList<>();
+    for (Article article : articles) {
+        Board board = new Board();
+        board.setTitle(article.getTitle());
+        board.setContent(article.getContent());
+        board.setUser(article.getUser());
+        board.setNewDate(article.getNewDate());
+        board.setCount(article.getViewCount());
+        board.setLikec(article.getLikes());
+        boards.add(board);
+    }
+    return boards;
+}
 
 // Board 특정 글 조회
 public Optional<Board> findBoardById(Long id) {

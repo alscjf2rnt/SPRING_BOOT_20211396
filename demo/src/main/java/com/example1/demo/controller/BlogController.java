@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import com.example1.demo.model.domain.Article;
 import com.example1.demo.model.domain.Board;
 import com.example1.demo.model.service.AddArticleRequest;
@@ -24,13 +25,28 @@ public class BlogController {
     @Autowired
     BlogService blogService; // DemoController 클래스 아래 객체 생성
 
-    // 게시판 목록 페이지
-    @GetMapping("/article_list")   // 게시판 링크 지정
-    public String article_list(Model model) {
-        List<Article> list = blogService.findAllArticles(); // 게시판 리스트
-        model.addAttribute("articles", list); // 모델에 추가
-        return "article_list"; // .HTML 연결
-    }   
+    // // 게시판 목록 페이지
+    // @GetMapping("/article_list")   // 게시판 링크 지정
+    // public String article_list(Model model) {
+    //     List<Article> list = blogService.findAllArticles(); // 게시판 리스트
+    //     model.addAttribute("articles", list); // 모델에 추가
+    //     return "article_list"; // .HTML 연결
+    // }   
+    @GetMapping("/article_list")
+    public String article_list(Model model, @RequestParam(defaultValue = "0") int page) {
+    // 페이지 번호와 한 페이지에 표시할 게시글 개수를 설정
+    Pageable pageable = PageRequest.of(page, 10);
+    
+    // 페이징된 게시글 목록 조회
+    Page<Article> list = blogService.findAllArticles(pageable);
+
+    // 모델에 필요한 데이터 추가
+    model.addAttribute("articles", list);
+    model.addAttribute("totalPages", list.getTotalPages());
+    model.addAttribute("currentPage", page);
+    
+    return "article_list";  // .html로 이동
+}
 
     // @GetMapping("/board_view/{id}") // 게시판 링크 지정
     // public String board_view(Model model, @PathVariable Long id) {
@@ -63,8 +79,8 @@ public class BlogController {
         System.out.println("세션 userId: " + userId); // 디버깅용 출력
         System.out.println("세션 email: " + email); // 디버깅용 출력
 
-        // 페이지당 게시글 개수를 3으로 설정
-        PageRequest pageable = PageRequest.of(page, 3);
+        // 페이지당 게시글 개수를 10으로 설정
+        PageRequest pageable = PageRequest.of(page, 10);
         Page<Board> list;
 
         // 검색어에 따른 게시글 조회
@@ -84,11 +100,6 @@ public class BlogController {
         return "board_list"; // 게시판 목록 페이지로 이동
     }
     
-     // 게시글 작성 화면 표시
-     @GetMapping("/article_write") // 게시글 작성 페이지로 이동하는 메소드 추가
-     public String article_write(Model model) {
-         return "article_write"; // 게시글 작성 페이지를 반환
-     }
  
      // 게시글 작성 처리
      @PostMapping("/api/article_write") // 게시글 작성 요청을 처리하는 메소드 추가
@@ -164,12 +175,34 @@ public String board_view(Model model, @PathVariable Long id) {
 public String board_write() {
     return "board_write";
 }
+// @PostMapping("/board_write")
+// public String createArticle(@ModelAttribute AddArticleRequest request, HttpSession session) {
+//     String user = (String) session.getAttribute("email");
+//     if (user != null) {
+//         request.setUser(user); // 로그인된 사용자 설정
+//         blogService.save(request); // 게시글 저장
+//         return "redirect:/board_list"; // 목록 페이지로 리다이렉트
+//     }
+//     return "redirect:/login"; // 로그인 안 되어 있으면 로그인 페이지로 리다이렉트
+// }
+// @PostMapping("/api/boards")
+// public String addboards(@ModelAttribute AddArticleRequest request) {
+//     blogService.saveBoard(request);  // 수정된 부분
+//     return "redirect:/board_list";
+// }
 @PostMapping("/api/boards")
-public String addboards(@ModelAttribute AddArticleRequest request) {
-    blogService.saveBoard(request);  // 수정된 부분
+public String addboards(@ModelAttribute AddArticleRequest request, HttpSession session) {
+    // 로그인한 사용자 정보를 세션에서 가져옴
+    String user = (String) session.getAttribute("userId"); // userId로 변경 가능
+
+    // AddArticleRequest에 로그인한 사용자 설정
+    request.setUser(user);
+
+    // 게시글 저장
+    blogService.saveBoard(request);
+
     return "redirect:/board_list";
 }
-
 
 
 }

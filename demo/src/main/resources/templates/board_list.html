@@ -50,6 +50,14 @@
                         <td th:text="${board.newdate}"></td>
                         <td th:text="${board.count}"></td>
                         <td th:text="${board.likec}"></td>
+                        <td>
+                            <!-- 작성자와 현재 로그인한 사용자 비교 -->
+                            <span th:if="${board.user == email}">
+                                <!-- 작성자일 때만 보이는 수정, 삭제 버튼 -->
+                                <a th:href="@{/board_edit/{id}(id=${board.id})}" class="btn btn-warning btn-sm">수정</a>
+                                <a th:href="@{/api/board_delete/{id}(id=${board.id})}" class="btn btn-danger btn-sm">삭제</a>
+                            </span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
