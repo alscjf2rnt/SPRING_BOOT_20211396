@@ -428,3 +428,36 @@
 .testimonial-carousel .owl-dot.active::after {
     background: var(--primary);
 }
+
+
+/* 부모 요소가 flex 컨테이너로 설정 */
+.team-item .team-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 버튼 스타일 */
+.btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* 버튼 너비를 부모 요소에 맞추기 */
+    max-width: 250px; /* 버튼 최대 너비 설정 */
+    font-size: 16px; /* 글씨 크기 고정 */
+    white-space: nowrap; /* 텍스트가 줄바꿈되지 않도록 설정 */
+    border: 2px solid transparent; /* 테두리 고정 */
+    transition: all 0.3s ease; /* 부드러운 변화 효과 */
+    box-sizing: border-box; /* padding과 border가 총 너비에 포함되도록 설정 */
+}
+
+.btn:hover {
+    background-color: #0056b3; /* hover 시 배경색 */
+    color: #ffffff; /* hover 시 글씨 색 */
+    border-color: #0056b3; /* hover 시 테두리 색 */
+}
+
+.btn:focus {
+    outline: none; /* 클릭 시 기본 outline 제거 */
+}
