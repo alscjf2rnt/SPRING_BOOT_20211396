@@ -31,15 +31,19 @@ public class Article {
     private int viewCount;
 
     @Column(name = "likes") // `likes` 필드 추가
-    private int likes;
+    private Integer likes; // 수정: int -> Integer로 변경하여 null 값을 처리할 수 있도록
 
     // 게시글 수정 메서드
-    public void update(String title, String content, String user, String newDate, int viewCount, int likes) {
+    public void update(String title, String content, String user, String newDate, int viewCount, Integer likes) {
         this.title = title;
         this.content = content;
         this.user = user;
         this.newDate = newDate;
         this.viewCount = viewCount;
-        this.likes = likes;
+        if (likes != null) {
+            this.likes = likes;
+        } else {
+            this.likes = 0; // likes가 null일 경우 0으로 설정
+        }
     }
 }

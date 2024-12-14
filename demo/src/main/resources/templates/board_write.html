@@ -5,6 +5,19 @@
     <title>블로그 게시글 작성</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script>
+        // 페이지 로드 시, 오늘 날짜를 자동으로 설정
+        window.onload = function() {
+            var today = new Date();
+            var yyyy = today.getFullYear();
+            var mm = today.getMonth() + 1; // 월은 0부터 시작하므로 +1
+            var dd = today.getDate();
+            if (mm < 10) mm = '0' + mm;
+            if (dd < 10) dd = '0' + dd;
+            var formattedDate = yyyy + '-' + mm + '-' + dd;
+            document.getElementById('newdate').value = formattedDate;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
@@ -13,7 +26,7 @@
         <!-- 게시글 추가 폼 -->
         <div class="mt-4">
             <h2>게시글 추가</h2>
-            <form th:action="@{/api/articles}" method="post" name="content">
+            <form th:action="@{/api/boards}" method="post" name="content">
                 <div class="form-group">
                     <label for="title">제목:</label>
                     <input type="text" class="form-control" id="title" name="title" required>
@@ -24,8 +37,8 @@
                 </div>
                 
                 <!-- 히든 필드 추가 -->
-                <input type="hidden" id="user" name="user" value="GUEST">
-                <input type="hidden" id="newdate" name="newdate" value="오늘날짜">
+                <input type="hidden" id="user" name="user" value="GUEST"> <!-- 실제 로그인한 사용자로 변경 필요 -->
+                <input type="hidden" id="newdate" name="newdate" value=""> <!-- 오늘 날짜 자동 삽입 -->
                 <input type="hidden" id="count" name="count" value="0">
                 <input type="hidden" id="likec" name="likec" value="0">
 

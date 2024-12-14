@@ -8,7 +8,9 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">게시글 보기</h1>
+                <h1 class="mt-5">게시글 보기</h1>
+        <div class="mt-5">
+</head>
 <!-- 게시글 리스트 -->
 <div class="mt-5">
     <h2>현재 게시글 내용 보기</h2>
@@ -25,13 +27,15 @@
         </thead>
         <tbody>
             <tr th:each="board : ${boards}">
-                <td th:text="${board.id}"></td>
+                <!-- <td th:text="${board.id}"></td>
                 <td>
                     <a th:href="@{/board_view/{id}(id=${board.id})}">
                     <span th:text="${board.title}"></span>
                     </a>
-                    </td>                                
-                <!-- <td th:text="${board.title}"></td> -->
+                    </td>           -->
+                                          
+                <td th:text="${board.id}"></td>
+                <td th:text="${board.title}"></td>
                 <td th:text="${board.user}"></td>
                 <td th:text="${board.newdate}"></td>
                 <td th:text="${board.count}"></td>
@@ -43,26 +47,26 @@
             
             <table class="table table-bordered">
                 <thead>
-                <tr>
-                <th>글내용</th>
+                    <tr>
+                        <th>글내용</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr th:each="board : ${boards}"> 
                         <td th:text="${board.content}"></td>
                     </tr>
+                </tbody>
                         <td>
                         <!-- 수정 버튼 -->
                         <a class="btn btn-warning" th:href="@{/board_edit/{id}(id=${board.id})}">수정</a>
+                    
                         <!-- 삭제 버튼 -->
-                        <form th:action="@{/api/board_delete/{id}(id=${board.id})}" method="post" style="display:inline;">
+                        <form th:action="@{/api/board_delete/{id}(id=${board.id})}" method="post" style="display:inline;" >
                         <input type="hidden" name="_method" value="delete">
+                        <!-- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> -->
                         <button type="submit" class="btn btn-danger">삭제</button>
-                        </form>
-                        </td> 
-                </tbody>
-            </table>
-        
-    
+                        </form>                       
+                    </td> 
+            </table>    
 </body>
 </html>

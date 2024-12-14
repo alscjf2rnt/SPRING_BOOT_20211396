@@ -39,8 +39,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="board : ${boards}">
-                        <td th:text="${board.id}"></td>
+                    <tr th:each="board, iterStat : ${boards}">
+                        <!-- <td th:text="${board.id}"></td> -->
+                        <!-- 게시글 ID -->
+                        <td th:text="${startNum + iterStat.index}"></td> <!-- 순차적으로 번호 출력 -->
                         <td>
                             <a th:href="@{/board_view/{id}(id=${board.id})}">
                                 <span th:text="${board.title}"></span>
@@ -51,18 +53,41 @@
                         <td th:text="${board.count}"></td>
                         <td th:text="${board.likec}"></td>
                         <td>
-                            <!-- 작성자와 현재 로그인한 사용자 비교 -->
-                            <span th:if="${board.user == email}">
-                                <!-- 작성자일 때만 보이는 수정, 삭제 버튼 -->
+                                <!-- 작성자와 현재 로그인한 사용자 비교 -->
+                                <span th:if="${board.user == email}">
+                                <!-- 작성자일 때만 보이는 수정, 삭제 버튼  -->
                                 <a th:href="@{/board_edit/{id}(id=${board.id})}" class="btn btn-warning btn-sm">수정</a>
-                                <a th:href="@{/api/board_delete/{id}(id=${board.id})}" class="btn btn-danger btn-sm">삭제</a>
-                            </span>
+                                <a th:href="@{/api/board_delete/{id}(id=${board.id})}" class="btn btn-danger btn-sm">삭제</a> 
+                                </span>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
+        <!-- 페이징 네비게이션 -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <!-- 이전 페이지 버튼 -->
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/board_list(page=${currentPage - 1}, keyword=${keyword})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <!-- 페이지 번호들 -->
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/board_list(page=${i}, keyword=${keyword})}" th:text="${i + 1}"></a>
+                </li>
+                <!-- 다음 페이지 버튼 -->
+                <li class="page-item" th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/board_list(page=${currentPage + 1}, keyword=${keyword})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
         <!-- 글쓰기 버튼 -->
         <div class="mt-4">
             <table class="table table-bordered">

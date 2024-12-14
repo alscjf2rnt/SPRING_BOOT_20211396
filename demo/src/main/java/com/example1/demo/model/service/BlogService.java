@@ -1,5 +1,6 @@
 package com.example1.demo.model.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,8 @@ import com.example1.demo.model.repository.BlogRepository;
 import com.example1.demo.model.repository.BoardRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 
@@ -48,18 +50,54 @@ public class BlogService {
         return blogRepository.save(request.toEntity());
     }
 
- // Board 저장
+//  // Board 저장
+// public Board saveBoard(AddArticleRequest request) {
+//     Board board = new Board();
+//     board.setTitle(request.getTitle()); // AddArticleRequest의 title을 Board의 title로 설정
+//     board.setContent(request.getContent()); // content도 마찬가지
+//     board.setUser(request.getUser()); // user 설정
+//     board.setNewDate(LocalDate.parse(request.getNewDate()));
+//     board.setCount(0);  // 조회수 기본값 0 (int로 설정)
+//     board.setLikec(0);  // 좋아요 수 기본값 0 (int로 설정)
+//     return boardRepository.save(board); // Board 객체를 저장
+    
+// }
+// Board 저장
 public Board saveBoard(AddArticleRequest request) {
     Board board = new Board();
     board.setTitle(request.getTitle()); // AddArticleRequest의 title을 Board의 title로 설정
     board.setContent(request.getContent()); // content도 마찬가지
-    board.setUser(request.getUser()); // user 설정
-    board.setNewDate(request.getNewDate()); // newDate 설정
+
+    // 로그인한 사용자의 이메일을 가져옴
+    String loggedInUserEmail = getLoggedInUserEmail();
+    board.setUser(loggedInUserEmail); // 로그인한 사용자 이메일을 user 필드에 설정
+
+    // newDate가 null일 경우 LocalDate.now()로 처리
+    String newDateString = request.getNewDate();
+    if (newDateString != null) {
+        try {
+            board.setNewDate(LocalDate.parse(newDateString)); // String을 LocalDate로 변환하여 set
+        } catch (Exception e) {
+            // 예외 발생 시 처리
+            throw new IllegalArgumentException("잘못된 날짜 형식입니다. 올바른 형식을 사용해주세요.");
+        }
+    } else {
+        // newDate가 null일 경우 현재 날짜를 기본값으로 설정
+        board.setNewDate(LocalDate.now());
+    }
+
     board.setCount(0);  // 조회수 기본값 0 (int로 설정)
     board.setLikec(0);  // 좋아요 수 기본값 0 (int로 설정)
     return boardRepository.save(board); // Board 객체를 저장
-    
 }
+
+// 로그인한 사용자의 이메일을 반환하는 메서드 (예시: Spring Security 사용)
+private String getLoggedInUserEmail() {
+    // Spring Security에서 로그인한 사용자의 이메일을 가져오기
+    return SecurityContextHolder.getContext().getAuthentication().getName(); // 이메일 또는 사용자명
+}
+
+
 
  // Board 저장
  public Board saveArticle(AddArticleRequest request) {
@@ -67,7 +105,7 @@ public Board saveBoard(AddArticleRequest request) {
     board.setTitle(request.getTitle()); // AddArticleRequest의 title을 Board의 title로 설정
     board.setContent(request.getContent()); // content도 마찬가지
     board.setUser(request.getUser()); // user 설정
-    board.setNewDate(request.getNewDate()); // newDate 설정
+    board.setNewDate(LocalDate.parse(request.getNewDate()));
     board.setCount(0);  // 조회수 기본값 0 (int로 설정)
     board.setLikec(0);  // 좋아요 수 기본값 0 (int로 설정)
     return boardRepository.save(board); // Board 객체를 저장
@@ -95,7 +133,7 @@ public List<Board> convertArticlesToBoards(List<Article> articles) {
         board.setTitle(article.getTitle());
         board.setContent(article.getContent());
         board.setUser(article.getUser());
-        board.setNewDate(article.getNewDate());
+        board.setNewDate(LocalDate.parse(article.getNewDate())); // String을 LocalDate로 변환하여 set
         board.setCount(article.getViewCount());
         board.setLikec(article.getLikes());
         boards.add(board);
@@ -117,18 +155,32 @@ public Optional<Board> findBoardById(Long id) {
     //         blogRepository.save(article); // Article 객체에 저장
     //     });
     // }
-    public void update(Long id, AddArticleRequest request) {
-        Optional<Article> optionalArticle = blogRepository.findById(id); // Article 조회
-        optionalArticle.ifPresent(article -> { // 값이 존재하면
-            article.update( // Article 객체의 update 메소드 호출
-                request.getTitle(), 
-                request.getContent(), 
-                request.getUser(), 
-                request.getNewDate(), 
-                request.getViewCount(), 
-                request.getLikes()
-            );
-            blogRepository.save(article); // 수정된 Article 객체 저장
+    // public void update(Long id, AddArticleRequest request) {
+    //     Optional<Article> optionalArticle = blogRepository.findById(id); // Article 조회
+    //     optionalArticle.ifPresent(article -> { // 값이 존재하면
+    //         article.update( // Article 객체의 update 메소드 호출
+    //             request.getTitle(), 
+    //             request.getContent(), 
+    //             request.getUser(), 
+    //             request.getNewDate(), 
+    //             request.getViewCount(), 
+    //             request.getLikes()
+    //         );
+    //         blogRepository.save(article); // 수정된 Article 객체 저장
+    //     });
+    // }
+    
+    public void update(Long id, AddBoardRequest request) {
+        Optional<Board> optionalBoard = boardRepository.findById(id); // Board 조회
+        optionalBoard.ifPresent(board -> { // 값이 존재하면
+            board.setTitle(request.getTitle()); // title 수정
+            board.setContent(request.getContent()); // content 수정
+            board.setUser(request.getUser() != null ? request.getUser() : "GUEST"); // user가 null이면 "GUEST"로 설정
+            board.setNewDate(request.getNewDate() != null ? request.getNewDate() : LocalDate.now()); // newDate가 null이면 오늘 날짜로 설정
+            board.setCount(request.getCount()); // 조회수 수정
+            board.setLikec(request.getLikec()); // 좋아요 수 수정
+    
+            boardRepository.save(board); // 수정된 Board 객체 저장
         });
     }
     
@@ -153,6 +205,7 @@ public Optional<Board> findBoardById(Long id) {
     // }
 
     // 게시판 삭제
+    @Transactional  // 트랜잭션 처리
     public void deleteBoard(Long id) {
         boardRepository.deleteById(id);
     }

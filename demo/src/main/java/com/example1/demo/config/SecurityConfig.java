@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 @Configuration // 스프링 설정 클래스 지정, 등록된 Bean 생성 시점
 @EnableWebSecurity // 스프링 보안 활성화
@@ -36,5 +37,11 @@ public class SecurityConfig { // 스프링에서 보안 관리 클래스
     @Bean // 암호화 설정
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // 비밀번호 암호화 저장
+    }
+
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        System.out.println("HiddenHttpMethodFilter가 설정되었습니다.");
+        return new HiddenHttpMethodFilter();
     }
 }

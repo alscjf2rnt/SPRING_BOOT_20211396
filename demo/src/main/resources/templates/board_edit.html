@@ -46,10 +46,9 @@
                             <td th:text="${board.id}"></td>
                             <td>
                                 <a th:href="@{/board_view/{id}(id=${board.id})}">
-                                <span th:text="${board.title}"></span>
+                                    <span th:text="${board.title}"></span>
                                 </a>
-                                </td>                                
-                            <!-- <td th:text="${board.title}"></td> -->
+                            </td>
                             <td th:text="${board.user}"></td>
                             <td th:text="${board.newdate}"></td>
                             <td th:text="${board.count}"></td>
