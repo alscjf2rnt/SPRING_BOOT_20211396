@@ -1,4 +1,4 @@
-package com.example1.demo.model.service;
+package com.example1.demo.model.dto;
 
 import lombok.*;
 import javax.validation.constraints.*;

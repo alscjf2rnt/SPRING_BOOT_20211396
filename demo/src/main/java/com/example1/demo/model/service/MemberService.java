@@ -10,7 +10,9 @@ import com.example1.demo.model.domain.Board;
 import com.example1.demo.model.repository.BlogRepository;
 import com.example1.demo.model.repository.BoardRepository;
 import com.example1.demo.model.repository.MemberRepository;
-import com.example1.demo.model.domain.Member; 
+import com.example1.demo.model.domain.Member;
+import com.example1.demo.model.dto.AddMemberRequest;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;

@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example1.demo.model.domain.Member;
-import com.example1.demo.model.service.AddMemberRequest;
 import com.example1.demo.model.service.MemberService;
+import com.example1.demo.model.dto.AddMemberRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -46,17 +46,19 @@ public class MemberController {
         return "login"; // 로그인 HTML 반환
     }
 
-    // 로그인 처리 코드 예시
+    // 로그인 처리
     @PostMapping("/login")
-    public String login(String email, String password, HttpSession session) {
-        Member member = memberService.loginCheck(email, password); 
-    // 로그인 검증 후 세션에 저장
-    session.setAttribute("email", email); // 로그인한 사용자의 이메일 세션에 저장
-    session.setAttribute("userId", member.getId()); 
-
-    // 로그인 후 게시판 목록으로 리다이렉트
-    return "redirect:/board_list";
-}
+    public String login(String email, String password, HttpSession session, Model model) {
+        try {
+            Member member = memberService.loginCheck(email, password); 
+            session.setAttribute("email", email); // 세션에 이메일 저장
+            session.setAttribute("userId", member.getId()); // 세션에 사용자 ID 저장
+            return "redirect:/board_list"; // 로그인 후 게시판 목록으로 리다이렉트
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "login"; // 실패 시 로그인 페이지로 돌아감
+        }
+    }
 
     // 로그인 처리 (세션과 쿠키 저장)
     @PostMapping("/api/login_check")
