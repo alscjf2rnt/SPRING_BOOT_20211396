@@ -32,6 +32,10 @@ public class BlogService {
     }
 
 
+     // Board 저장 처리
+     public Board saveBoard(Board board) {
+        return boardRepository.save(board); // Board 객체를 저장
+    }
  // 검색어로 게시글 검색
  public Page<Article> searchArticlesByKeyword(String keyword, PageRequest pageable) {
     return blogRepository.findByTitleContainingOrContentContaining(keyword, keyword, pageable); // 제목이나 내용에서 키워드를 포함하는 게시글 검색
@@ -68,9 +72,11 @@ public Board saveBoard(AddArticleRequest request) {
     board.setTitle(request.getTitle()); // AddArticleRequest의 title을 Board의 title로 설정
     board.setContent(request.getContent()); // content도 마찬가지
 
-    // 로그인한 사용자의 이메일을 가져옴
-    String loggedInUserEmail = getLoggedInUserEmail();
-    board.setUser(loggedInUserEmail); // 로그인한 사용자 이메일을 user 필드에 설정
+      // 로그인한 사용자의 이메일을 가져와 '@' 앞부분만 추출
+      String loggedInUserEmail = getLoggedInUserEmail();
+      String userName = extractUserNameFromEmail(loggedInUserEmail);
+      board.setUser(userName); // '@' 앞부분만 저장
+  
 
     // newDate가 null일 경우 LocalDate.now()로 처리
     String newDateString = request.getNewDate();
@@ -91,10 +97,17 @@ public Board saveBoard(AddArticleRequest request) {
     return boardRepository.save(board); // Board 객체를 저장
 }
 
+// 이메일에서 '@' 앞부분을 추출하는 메서드
+private String extractUserNameFromEmail(String email) {
+    if (email != null && email.contains("@")) {
+        return email.split("@")[0]; // '@' 앞부분 반환
+    }
+    return "GUEST"; // 이메일이 null이거나 잘못된 형식이면 GUEST 반환
+}
 // 로그인한 사용자의 이메일을 반환하는 메서드 (예시: Spring Security 사용)
 private String getLoggedInUserEmail() {
     // Spring Security에서 로그인한 사용자의 이메일을 가져오기
-    return SecurityContextHolder.getContext().getAuthentication().getName(); // 이메일 또는 사용자명
+    return SecurityContextHolder.   getContext().getAuthentication().getName(); // 이메일 또는 사용자명
 }
 
 
@@ -175,14 +188,20 @@ public Optional<Board> findBoardById(Long id) {
         optionalBoard.ifPresent(board -> { // 값이 존재하면
             board.setTitle(request.getTitle()); // title 수정
             board.setContent(request.getContent()); // content 수정
-            board.setUser(request.getUser() != null ? request.getUser() : "GUEST"); // user가 null이면 "GUEST"로 설정
-            board.setNewDate(request.getNewDate() != null ? request.getNewDate() : LocalDate.now()); // newDate가 null이면 오늘 날짜로 설정
+            
+            // 작성자가 null이면 기존 작성자 유지
+            board.setUser(request.getUser() != null ? request.getUser() : board.getUser());
+            
+            // newDate가 null이면 기존 날짜 유지
+            board.setNewDate(request.getNewDate() != null ? request.getNewDate() : board.getNewdate());
+            
             board.setCount(request.getCount()); // 조회수 수정
             board.setLikec(request.getLikec()); // 좋아요 수 수정
     
             boardRepository.save(board); // 수정된 Board 객체 저장
         });
     }
+    
     
     
 //   // 게시글 수정
@@ -196,7 +215,7 @@ public Optional<Board> findBoardById(Long id) {
 
      // 게시글 삭제
      public void delete(Long id) {
-        blogRepository.deleteById(id);
+        boardRepository.deleteById(id);
     }
 
     // // 게시글 조회 (findById 메소드 추가)

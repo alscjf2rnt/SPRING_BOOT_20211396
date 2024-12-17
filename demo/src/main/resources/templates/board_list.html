@@ -48,7 +48,8 @@
                                 <span th:text="${board.title}"></span>
                             </a>
                         </td>
-                        <td th:text="${board.user}"></td>
+                        <p th:text="${board.user}"></p> 
+                        <td th:text="${board.getUserName()}"></td>
                         <td th:text="${board.newdate}"></td>
                         <td th:text="${board.count}"></td>
                         <td th:text="${board.likec}"></td>
@@ -57,7 +58,11 @@
                                 <span th:if="${board.user == email}">
                                 <!-- 작성자일 때만 보이는 수정, 삭제 버튼  -->
                                 <a th:href="@{/board_edit/{id}(id=${board.id})}" class="btn btn-warning btn-sm">수정</a>
-                                <a th:href="@{/api/board_delete/{id}(id=${board.id})}" class="btn btn-danger btn-sm">삭제</a> 
+                                <!-- 삭제 폼 (POST 방식으로 DELETE 요청 보내기) -->
+                                <form th:action="@{/api/board_delete/{id}(id=${board.id})}" method="POST" style="display:inline;">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger btn-sm">삭제</button>
+                                </form>
                                 </span>
                         </td>
                     </tr>

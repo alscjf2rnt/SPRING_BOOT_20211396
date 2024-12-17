@@ -38,4 +38,11 @@ public class Member {
      // JPA를 위한 기본 생성자
      protected Member() {
     }
+      // 이메일에서 아이디 부분만 추출하는 메서드
+      public String getUserName() {
+        if (this.email != null && this.email.contains("@")) {
+            return this.email.split("@")[0]; // 이메일에서 '@' 앞부분만 추출
+        }
+        return this.email; // '@'가 없다면 그대로 반환
+    }
 }

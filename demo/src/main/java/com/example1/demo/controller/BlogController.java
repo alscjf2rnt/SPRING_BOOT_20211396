@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example1.demo.model.service.AddBoardRequest; // AddBoardRequest 클래스 경로 추가
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpSession;
 public class BlogController {
 
     @Autowired
-    BlogService blogService; // DemoController 클래스 아래 객체 생성
+    private BlogService blogService; // DemoController 클래스 아래 객체 생성
 
     // // 게시판 목록 페이지
     // @GetMapping("/article_list")   // 게시판 링크 지정
@@ -107,11 +107,34 @@ public String board_list(
     model.addAttribute("keyword", keyword); // 검색어 전달
     model.addAttribute("email", email); // 로그인 사용자 이메일 추가
     model.addAttribute("startNum", startNum); // 시작 번호 추가
+    model.addAttribute("boardList", list);  // 모델에 게시글 리스트와 이메일 추가
 
     return "board_list"; // 게시판 목록 페이지로 이동
 }
 
 
+
+@GetMapping("/board_write")
+    public String showBoardWritePage(Model model, HttpSession session) {
+        String email = (String) session.getAttribute("email");
+        if (email == null) {
+            email = "GUEST"; // 로그인하지 않은 경우 기본값
+        }
+        model.addAttribute("email", email); // 이메일을 모델에 추가
+        return "board_write"; // board_write.html로 이동
+    }
+
+    @PostMapping("/board_write")
+    public String createBoard(Board board, HttpSession session) {
+        String email = (String) session.getAttribute("email");
+        if (email == null) {
+            email = "GUEST";  // 로그인하지 않은 경우 기본값 사용
+        }
+        board.setUser(email); // 게시글 작성자에 이메일 설정
+
+        blogService.saveBoard(board); // 게시글 저장
+        return "redirect:/board_list"; // 게시글 목록으로 리다이렉트
+    }
 
 
      // 게시글 작성 처리
@@ -134,7 +157,7 @@ public String article_edit(Model model, @PathVariable Long id) {
 }
 
     @DeleteMapping("/api/board_delete/{id}")
-    public String deleteboard(@PathVariable Long id) {
+    public String deleteBoard(@PathVariable Long id) {
     blogService.delete(id);
     return "redirect:/board_list";
     }
@@ -192,10 +215,10 @@ public String board_view(Model model, @PathVariable Long id) {
     }
     return "board_view"; // .HTML 연결
 }
-@GetMapping("/board_write")
-public String board_write() {
-    return "board_write";
-}
+// @GetMapping("/board_write")
+// public String board_write() {
+//     return "board_write";
+// }
 // @PostMapping("/board_write")
 // public String createArticle(@ModelAttribute AddArticleRequest request, HttpSession session) {
 //     String user = (String) session.getAttribute("email");
@@ -211,19 +234,38 @@ public String board_write() {
 //     blogService.saveBoard(request);  // 수정된 부분
 //     return "redirect:/board_list";
 // }
-@PostMapping("/api/boards")
-public String addboards(@ModelAttribute AddArticleRequest request, HttpSession session) {
-    // 로그인한 사용자 정보를 세션에서 가져옴
-    String user = (String) session.getAttribute("userId"); // userId로 변경 가능
 
-    // AddArticleRequest에 로그인한 사용자 설정
-    request.setUser(user);
+@PostMapping("/api/boards")
+public String addboards(@ModelAttribute AddBoardRequest  request, HttpSession session) {
+    // 로그인한 사용자의 이메일을 세션에서 가져옵니다.
+    String email = (String) session.getAttribute("email");
+    
+    // 이메일이 null이 아니라면 이메일을 설정
+    if (email != null) {
+        request.setEmail(email); // AddArticleRequest에 이메일 설정
+    } else {
+        request.setEmail("GUEST_EMAIL"); // 이메일이 없으면 기본값 설정
+    }
+
+    // Board 객체 생성 (Board.builder() 패턴 사용)
+    Board board = Board.builder()
+        .title(request.getTitle()) // 제목
+        .content(request.getContent()) // 내용
+        .user(request.getUser()) // 작성자
+        .email(request.getEmail()) // 이메일을 request에서 가져옴
+        .newdate(LocalDate.now())  // 오늘 날짜
+        .count(0)  // 초기 조회수
+        .likec(0)  // 초기 좋아요 수
+        .build();
 
     // 게시글 저장
-    blogService.saveBoard(request);
+    blogService.saveBoard(board);
 
-    return "redirect:/board_list";
+    return "redirect:/board_list"; // 게시글 목록으로 리다이렉트
 }
+
+
+
 
 
 }

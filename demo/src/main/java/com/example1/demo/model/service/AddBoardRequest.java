@@ -15,7 +15,8 @@ public class AddBoardRequest {
     private LocalDate newDate; 
     private int count = 0; // 기본값 0
     private int likec = 0; // 기본값 0
-
+    private String email;  // 이메일을 저장할 필드 추가
+    
     // setter 메서드 추가
     public void setUser(String user) {
         this.user = user;
@@ -23,6 +24,14 @@ public class AddBoardRequest {
 
     public String getUser() {
         return user;
+    }
+     // 이메일 설정하는 메서드 추가
+     public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     // toEntity 메서드
@@ -36,4 +45,5 @@ public class AddBoardRequest {
                 .likec(likec) // 기본값 0
                 .build();
     }
+
 }

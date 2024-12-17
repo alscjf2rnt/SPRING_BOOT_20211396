@@ -3,18 +3,17 @@ package com.example1.demo.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
+@Configuration
+public class SecurityConfig {
 
-@Configuration // 스프링 설정 클래스 지정, 등록된 Bean 생성 시점
-@EnableWebSecurity // 스프링 보안 활성화
-public class SecurityConfig { // 스프링에서 보안 관리 클래스
-
-    @Bean // 명시적 의존성 주입 : Autowired와 다름
-    // 5.7버전 이저 WebSecurityConfigurerAdapter 사용
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .headers(headers -> headers
@@ -22,26 +21,36 @@ public class SecurityConfig { // 스프링에서 보안 관리 클래스
                     response.setHeader("X-XSS-Protection", "1; mode=block"); // XSS-Protection 헤더 설정
                 })
             )
-            // .csrf(withDefaults())
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**") // /api/ 경로에 대해서는 CSRF 보호 비활성화
+            )
             .sessionManagement(session -> session
-                .invalidSessionUrl("/session-expired") // 세션 만료시 이동 페이지
-                .maximumSessions(1) // 사용자 별 세션 최대 수
+                .invalidSessionUrl("/session-expired") // 세션 만료 시 이동 페이지
+                .maximumSessions(1) // 사용자별 세션 최대 수
                 .maxSessionsPreventsLogin(true) // 동시 세션 제한
             );
 
-        // 설정을 비워둠
-        return http.build(); // 필터 체인을 통해 보안설정(HttpSecurity)을 반환
+        return http.build(); // 필터 체인을 통해 보안 설정(HttpSecurity)을 반환
     }
 
-    @Bean // 암호화 설정
+    @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // 비밀번호 암호화 저장
+        return new BCryptPasswordEncoder(); // 비밀번호 암호화
     }
 
     @Bean
     public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
-        System.out.println("HiddenHttpMethodFilter가 설정되었습니다.");
         return new HiddenHttpMethodFilter();
+    }
+
+    public String getLoggedInUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
+            if (principal instanceof UserDetails) {
+                return ((UserDetails) principal).getUsername(); // 이메일을 반환
+            }
+        }
+        return null; // 인증되지 않은 경우 null 반환
     }
 }
