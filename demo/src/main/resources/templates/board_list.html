@@ -15,6 +15,8 @@
             <!-- 사용자 이메일과 로그아웃 버튼 -->
             <span class="font-weight-bold text-primary" th:text="${email} + '님 환영합니다.'"></span>
             <a class="btn btn-sm btn-outline-danger ml-3" th:href="@{/api/logout}">로그아웃</a>
+            <!-- 회원 정보 버튼 추가 -->
+            <a class="btn btn-sm btn-outline-info ml-3" th:href="@{/session_info}">회원 정보</a>
         </div>
     </div>
         <!-- 게시글 검색창 -->
@@ -48,7 +50,6 @@
                                 <span th:text="${board.title}"></span>
                             </a>
                         </td>
-                        <p th:text="${board.user}"></p> 
                         <td th:text="${board.getUserName()}"></td>
                         <td th:text="${board.newdate}"></td>
                         <td th:text="${board.count}"></td>

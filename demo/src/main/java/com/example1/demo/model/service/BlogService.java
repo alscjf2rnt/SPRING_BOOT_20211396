@@ -32,6 +32,20 @@ public class BlogService {
     }
 
 
+    // 게시글 좋아요 수 증가
+    public void incrementLikeCount(Long boardId) {
+    Board board = boardRepository.findById(boardId)
+            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+    board.setLikec(board.getLikec() + 1);  // 좋아요 수 1 증가
+    boardRepository.save(board);  // 업데이트된 게시글 저장
+}
+
+
+ // 게시글 상세 조회 메서드
+ public Board getBoardById(Long boardId) { 
+    return boardRepository.findById(boardId)
+            .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+}
      // Board 저장 처리
      public Board saveBoard(Board board) {
         return boardRepository.save(board); // Board 객체를 저장
@@ -212,6 +226,11 @@ public Optional<Board> findBoardById(Long id) {
 //         blogRepository.save(article); // 수정된 Article 객체 저장
 //     });
 // }
+
+    public void updateBoard(Board board) {
+    // boardRepository는 JPA 리포지토리로 가정
+    boardRepository.save(board); // 해당 게시글을 DB에 업데이트
+}
 
      // 게시글 삭제
      public void delete(Long id) {

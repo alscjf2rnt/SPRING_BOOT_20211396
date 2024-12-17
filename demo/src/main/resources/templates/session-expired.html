@@ -1,12 +1,20 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>세션 만료</title>
+    <title>세션 정보</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>세션이 만료되었습니다.</h1>
-    <p>다시 로그인해 주세요.</p>
-    <a href="/login">로그인 페이지로 이동</a>
+    <div class="container">
+        <h1 class="mt-5 text-info">세션 만료</h1>
+        <p class="mb-0">세션이 만료되었습니다. 다시 로그인 해주세요.</p>
+
+        <!-- 이전 페이지로 돌아가는 버튼 -->
+        <div class="mt-4">
+            <a href="javascript:history.back()" class="btn btn-primary">이전 페이지로</a>
+        </div>
+    </div>
 </body>
 </html>

@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @Transactional // 트랜잭션 처리(클래스 내 모든 메소드 대상)
 @RequiredArgsConstructor
 public class MemberService {
+    
+    @Autowired    
 private final MemberRepository memberRepository;
 private final PasswordEncoder passwordEncoder; // 스프링 버전 5 이후, 단방향 해싱 알고리즘 지원
 
@@ -33,6 +35,8 @@ Member findMember = memberRepository.findByEmail(request.getEmail()); // 이메�
 if(findMember != null){
 throw new IllegalStateException("이미 가입된 회원입니다."); // 예외처리
 }
+}public void saveMember(Member member) {
+    memberRepository.save(member);
 }
 public Member saveMember(AddMemberRequest request){ 
 validateDuplicateMember(request); // 이메일 체크

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
+
 @Configuration
 public class SecurityConfig {
 
@@ -25,9 +26,9 @@ public class SecurityConfig {
                 .ignoringRequestMatchers("/api/**") // /api/ 경로에 대해서는 CSRF 보호 비활성화
             )
             .sessionManagement(session -> session
-                .invalidSessionUrl("/session-expired") // 세션 만료 시 이동 페이지
-                .maximumSessions(1) // 사용자별 세션 최대 수
-                .maxSessionsPreventsLogin(true) // 동시 세션 제한
+                .invalidSessionUrl("/session-expired") // 세션 만료 시 /session-expired URL로 리디렉션
+                .maximumSessions(2) // 사용자별 세션 최대 수
+                .maxSessionsPreventsLogin(false) // 동시 세션 제한
             );
 
         return http.build(); // 필터 체인을 통해 보안 설정(HttpSecurity)을 반환
@@ -40,7 +41,7 @@ public class SecurityConfig {
 
     @Bean
     public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
-        return new HiddenHttpMethodFilter();
+        return new HiddenHttpMethodFilter(); // POST 메서드 외 다른 HTTP 메서드 처리
     }
 
     public String getLoggedInUserEmail() {

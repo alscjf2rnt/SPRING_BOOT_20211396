@@ -13,12 +13,14 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example1.demo.model.domain.Article;
 import com.example1.demo.model.domain.Board;
 import com.example1.demo.model.service.AddArticleRequest;
 import com.example1.demo.model.service.BlogService;
-
+import com.example1.demo.model.dto.AddMemberRequest;
 import jakarta.servlet.http.HttpSession;
 
 
@@ -204,17 +206,37 @@ public String updateBoard(@PathVariable Long id, @ModelAttribute AddBoardRequest
 //     return "redirect:/board_list"; // 게시판 리스트로 리다이렉트
 // }
 
-
-@GetMapping("/board_view/{id}") // 게시판 링크 지정
-public String board_view(Model model, @PathVariable Long id) { 
-    Optional<Board> list = blogService.findBoardById(id); // 선택한 게시판 글
-    if (list.isPresent()) {
-        model.addAttribute("board", list.get()); // 존재할 경우 실제 Board 객체를 모델에 추가
-    } else {
-        return "/error_page/article_error"; // 오류 처리 페이지로 연결
-    }
-    return "board_view"; // .HTML 연결
+@PostMapping("/like/{id}")
+public String likeBoard(@PathVariable Long id) {
+    blogService.incrementLikeCount(id);  // 좋아요 수 1 증가
+    return "redirect:/board_view/{id}";  // 좋아요 후, 게시글 상세 페이지로 리다이렉트
 }
+
+    // 로그인한 사용자의 이메일을 가져오는 메서드 (예시: Spring Security 사용)
+    private String getLoggedInUserEmail() {
+        return SecurityContextHolder.getContext().getAuthentication().getName(); // 이메일 또는 사용자명
+    }
+
+
+    @GetMapping("/board_view/{id}")
+public String viewBoard(@PathVariable Long id, HttpSession session, Model model) {
+    // 게시글을 조회
+    Board board = blogService.getBoardById(id);
+    
+    // 조회수 1 증가
+    board.setCount(board.getCount() + 1);
+    blogService.updateBoard(board); // 수정된 게시글 정보 저장
+    
+    // 게시글 정보를 모델에 추가
+    model.addAttribute("board", board);
+    
+    // 게시글 작성자와 현재 로그인한 사용자 비교 (로그인한 사용자 이메일 확인)
+    String email = (String) session.getAttribute("email");
+    model.addAttribute("email", email);
+    
+    return "board_view"; // 게시글 상세 페이지로 이동
+}
+    
 // @GetMapping("/board_write")
 // public String board_write() {
 //     return "board_write";

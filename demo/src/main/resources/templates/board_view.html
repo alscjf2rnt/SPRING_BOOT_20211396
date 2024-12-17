@@ -5,68 +5,67 @@
     <title>게시글 보기</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <div class="container">
-                <h1 class="mt-5">게시글 보기</h1>
+        <h1 class="mt-5">게시글 보기</h1>
+
+        <!-- 게시글 상세 내용 -->
         <div class="mt-5">
-</head>
-<!-- 게시글 리스트 -->
-<div class="mt-5">
-    <h2>현재 게시글 내용 보기</h2>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>작성일</th>
-                <th>조회수</th>
-                <th>좋아요</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="board : ${boards}">
-                <!-- <td th:text="${board.id}"></td>
-                <td>
-                    <a th:href="@{/board_view/{id}(id=${board.id})}">
-                    <span th:text="${board.title}"></span>
-                    </a>
-                    </td>           -->
-                                          
-                <td th:text="${board.id}"></td>
-                <td th:text="${board.title}"></td>
-                <td th:text="${board.getUserName()}"></td>
-                <td th:text="${board.newdate}"></td>
-                <td th:text="${board.count}"></td>
-                <td th:text="${board.likec}"></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-            
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>글내용</th>
-                </tr>
+                        <th>ID</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>조회수</th>
+                        <th>좋아요</th>
+                    </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="board : ${boards}"> 
-                        <td th:text="${board.content}"></td>
+                    <tr>
+                        <!-- 게시글 정보를 출력 -->
+                        <td th:text="${board.id}"></td>
+                        <td th:text="${board.title}"></td>
+                        <td th:text="${board.getUserName()}"></td>
+                        <td th:text="${board.newdate}"></td>
+                        <td th:text="${board.count}"></td> <!-- 조회수 -->
+                        <td th:text="${board.likec}"></td> <!-- 좋아요 -->
                     </tr>
                 </tbody>
-                        <td>
-                        <!-- 수정 버튼 -->
-                        <a class="btn btn-warning" th:href="@{/board_edit/{id}(id=${board.id})}">수정</a>
-                    
-                        <!-- 삭제 버튼 -->
-                        <form th:action="@{/api/board_delete/{id}(id=${board.id})}" method="post" style="display:inline;" >
-                        <input type="hidden" name="_method" value="delete">
-                        <!-- <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"> -->
-                        <button type="submit" class="btn btn-danger">삭제</button>
-                        </form>                       
-                    </td> 
-            </table>    
+            </table>
+        </div>
+
+        <!-- 게시글 내용 -->
+        <div class="mt-4">
+            <h4>글 내용</h4>
+            <p th:text="${board.content}"></p> <!-- 게시글 내용 -->
+        </div>
+
+<!-- 좋아요 버튼 -->
+<form th:action="@{/like/{id}(id=${board.id})}" method="post" style="display:inline;">
+    <button type="submit" class="btn btn-light">
+        <i class="fas fa-heart" th:classappend="${board.likec > 0 ? ' text-danger' : ''}"></i> 
+        <span th:text="${board.likec}"></span> 좋아요
+    </button>
+</form>
+
+        <!-- 수정 및 삭제 버튼 -->
+        <div class="mt-4">
+            <a class="btn btn-warning" th:href="@{/board_edit/{id}(id=${board.id})}">수정</a>
+            
+            <form th:action="@{/api/board_delete/{id}(id=${board.id})}" method="post" style="display:inline;">
+                <input type="hidden" name="_method" value="delete">
+                <button type="submit" class="btn btn-danger">삭제</button>
+            </form>
+        </div>
+
+        <!-- 이전 페이지로 돌아가기 버튼 -->
+        <div class="mt-4">
+            <a class="btn btn-secondary" href="javascript:history.back()">이전 페이지</a>
+        </div>
+    </div>
 </body>
 </html>
