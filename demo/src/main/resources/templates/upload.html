@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>파일 업로드</title>
+</head>
+<body>
+    <h1>파일 업로드</h1>
+
+    <!-- 업로드 폼 -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <label for="file">파일 선택: </label> 
+        <input type="file" name="file" />
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit">업로드</button>
+        
+        
+    </form>
+
+    <!-- 업로드 후 결과 메시지 표시 -->
+    <div>
+        <h3>${message != null ? message : ''}</h3> <!-- 업로드 후 메시지 출력 -->
+    </div>
+
+</body>
+</html>

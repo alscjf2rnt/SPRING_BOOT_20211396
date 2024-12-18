@@ -23,7 +23,7 @@ public class SecurityConfig {
                 })
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**") // /api/ 경로에 대해서는 CSRF 보호 비활성화
+                .ignoringRequestMatchers("/upload", "/api/**") // /upload 경로와 /api/** 경로에 대해서 CSRF 보호 비활성화
             )
             .sessionManagement(session -> session
                 .invalidSessionUrl("/session-expired") // 세션 만료 시 /session-expired URL로 리디렉션

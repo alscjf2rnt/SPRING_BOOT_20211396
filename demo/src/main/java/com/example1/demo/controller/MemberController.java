@@ -156,32 +156,32 @@ public String showSessionInfo(HttpSession session, Model model) {
 
         return "redirect:/member_login"; // 로그아웃 후 로그인 페이지로 이동
     }
-    @PostMapping("/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file, Model model) {
-        String originalFileName = file.getOriginalFilename();
-        String fileName = originalFileName;
-        File uploadDir = new File("/path/to/upload/directory");
+    // @PostMapping("/upload")
+    // public String uploadFile(@RequestParam("file") MultipartFile file, Model model) {
+    //     String originalFileName = file.getOriginalFilename();
+    //     String fileName = originalFileName;
+    //     File uploadDir = new File("/path/to/upload/directory");
     
-        try {
-            // 동일한 파일이 있으면 이름 변경
-            if (new File(uploadDir, fileName).exists()) {
-                String[] nameParts = originalFileName.split("\\.");
-                String newFileName = nameParts[0] + "_" + System.currentTimeMillis() + "." + nameParts[1];
-                fileName = newFileName;
-            }
+    //     try {
+    //         // 동일한 파일이 있으면 이름 변경
+    //         if (new File(uploadDir, fileName).exists()) {
+    //             String[] nameParts = originalFileName.split("\\.");
+    //             String newFileName = nameParts[0] + "_" + System.currentTimeMillis() + "." + nameParts[1];
+    //             fileName = newFileName;
+    //         }
     
-            // 파일 업로드
-            File targetFile = new File(uploadDir, fileName);
-            file.transferTo(targetFile);
+    //         // 파일 업로드
+    //         File targetFile = new File(uploadDir, fileName);
+    //         file.transferTo(targetFile);
     
-        } catch (IOException e) {
-            // 파일 업로드 중 오류 발생 시 에러 메시지 모델에 추가
-            model.addAttribute("errorMessage", "파일 업로드 중 오류가 발생했습니다.");
-            return "upload_error"; // 업로드 에러 페이지로 이동
-        }
+    //     } catch (IOException e) {
+    //         // 파일 업로드 중 오류 발생 시 에러 메시지 모델에 추가
+    //         model.addAttribute("errorMessage", "파일 업로드 중 오류가 발생했습니다.");
+    //         return "upload_error"; // 업로드 에러 페이지로 이동
+    //     }
     
-        // 업로드 성공 시 성공 페이지로 이동
-        return "upload_success"; 
-    }
+    //     // 업로드 성공 시 성공 페이지로 이동
+    //     return "upload_success"; 
+    // }
     
 }
